@@ -1,14 +1,9 @@
+// POKUD SI CHCES ZNOVU VYKRESLIT KOCKU, MUSIS UPRAVIT V MAKEFILE pong_app NA change_me VSUDE
 /*******************************************************************
-  Project main function template for MicroZed based MZ_APO board
-  designed by Petr Porazil at PiKRON
+  Project PONG main function for MZ_APO board
+  designed by Ondrej Pechanec and Filip Marik
 
-  include your name there and license for distribution.
-
-  Remove next text: This line should not appear in submitted
-  work and project name should be change to match real application.
-  If this text is there I want 10 points subtracted from final
-  evaluation.
-
+  License: MIT
  *******************************************************************/
 
 #define _POSIX_C_SOURCE 200112L
@@ -23,7 +18,7 @@
 #include "mzapo_parlcd.h"
 #include "mzapo_phys.h"
 #include "mzapo_regs.h"
-#include "kote.c"
+#include "TBD-kote.c"
 
 unsigned short *fb;
 
