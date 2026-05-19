@@ -8,5 +8,5 @@ typedef struct{
     double size;
 } ball_t;
 
-
+void update_ball(ball_t* ball);
 #endif
