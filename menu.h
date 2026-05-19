@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // im using an enum as states because there will be a while loop that will look
 // at a state of a menu each time
@@ -24,8 +25,13 @@ typedef enum {
 typedef enum {
     EASY_DIFFICULTY,
     MEDIUM_DIFFICULTY,
-    HARD_DIFFICULTY
+    HARD_DIFFICULTY,
+    GO_BACK_1_PLAYER
 } one_player_menu_cursor_t;
+
+typedef enum {
+    GO_BACK_2_PLAYERS
+} two_players_menu_cursor_t;
 
 typedef enum {
     RESUME_CHOICE,
@@ -45,11 +51,9 @@ void draw_one_player_menu(one_player_menu_cursor_t cursor);
 void draw_two_players_menu();
 void draw_pause_menu(pause_menu_cursor_t cursor);
 void draw_end_menu(end_menu_cursor_t cursor);
+int get_menu_options_count(int current_state);
 void increment_cursor();
 void decrement_cursor();
-void increment_state();
-void decrement_state();
-void change_menu();
-
+void change_menu(bool *appRunning);
 
 #endif /* MENU_H */

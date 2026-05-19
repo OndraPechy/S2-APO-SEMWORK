@@ -28,6 +28,10 @@
 */
 
 // TO BE MOVED
+#define RED_KNOB_PRESSED_SHIFT 26
+#define GREEN_KNOB_PRESSED_MASK 0x02000000
+#define GREEN_KNOB_PRESSED_SHIFT 25
+#define BLUE_KNOB_PRESSED_SHIFT 24
 #define RED_KNOB_MASK 0x00FF0000
 #define RED_KNOB_SHIFT 16
 #define GREEN_KNOB_MASK 0x0000FF00
@@ -35,10 +39,9 @@
 #define BLUE_KNOB_MASK 0x000000FF
 #define BLUE_KNOB_SHIFT 0
 #define KNOB_MOVEMENT_DIVIDER 4
-char get_knob_value(int mask, int shift, uint32_t *knob_mem_base);
+char get_knobs_value(int mask, int shift, uint32_t *knob_mem_base);
 static uint8_t green_knob_previous_position;
-static uint8_t blue_knob_previous_position;
-static uint8_t red_knob_previous_position;
+static uint8_t green_knob_pressed_prev;
 // -----------
 
 enum currentAppState
@@ -80,56 +83,37 @@ int main(int argc, char *argv[])
    loop_delay.tv_nsec = 16 * 1000 * 1000;
 
    green_knob_previous_position =
-       get_knob_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
-   blue_knob_previous_position =
-       get_knob_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
-   red_knob_previous_position = get_knob_value(RED_KNOB_MASK, RED_KNOB_SHIFT, knob_mem);
+       get_knobs_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
+   green_knob_pressed_prev = get_knobs_value(GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
    bool appRunning = true;
    while (appRunning) {
-
-      uint8_t green_knob_pos =
-          get_knob_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
-      if (green_knob_pos != green_knob_previous_position) {
-         appRunning = false;
-      } else {
-         green_knob_previous_position = green_knob_pos;
-      }
-
       // naplnim cely ten buffer jednim cislem, aby se vykreslila jedna barva
       for (int index = 0; index < 320 * 480; index++) {
          // to u tady znamena ze ta 0 je unsigned
          frame_buffer[index] = 0u;
       }
 
-      uint8_t blue_knob_pos = get_knob_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
+      uint8_t green_knob_pos = get_knobs_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
       // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
-      int8_t diff_blue = (int8_t)(blue_knob_pos - blue_knob_previous_position);
+      int8_t diff_blue = (int8_t)(green_knob_pos - green_knob_previous_position);
       if (diff_blue <= -KNOB_MOVEMENT_DIVIDER) {
          // otocenim doprava posunu v menu dolu
+         green_knob_previous_position = green_knob_pos;
          increment_cursor();
-         blue_knob_previous_position = blue_knob_pos;
       }
       else if (diff_blue >= KNOB_MOVEMENT_DIVIDER) {
          // otocenim doprava posunu v levo nahoru
          // pricitam 3 aby se modulo nepocitalo se zapornym cislem
+         green_knob_previous_position = green_knob_pos;
          decrement_cursor();
-         blue_knob_previous_position = blue_knob_pos;
       }
 
-      uint8_t red_knob_pos = get_knob_value(RED_KNOB_MASK, RED_KNOB_SHIFT, knob_mem);
-      // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
-      int8_t diff_red = (int8_t)(red_knob_pos - red_knob_previous_position);
-      if (diff_red <= -KNOB_MOVEMENT_DIVIDER) {
-         // otocenim doprava posunu v menu dolu
-         increment_state();
-         red_knob_previous_position = red_knob_pos;
+
+      uint8_t green_knob_pressed = get_knobs_value(GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
+      if ((green_knob_pressed != 0) && (green_knob_pressed_prev == 0)) {
+         change_menu(&appRunning);
       }
-      else if (diff_red >= KNOB_MOVEMENT_DIVIDER) {
-         // otocenim doprava posunu v levo nahoru
-         // pricitam 3 aby se modulo nepocitalo se zapornym cislem
-         decrement_state();
-         red_knob_previous_position = red_knob_pos;
-      }
+      green_knob_pressed_prev = green_knob_pressed;
 
       showMenu();
 
@@ -158,14 +142,10 @@ int main(int argc, char *argv[])
 }
 
 // TO BE MOVED
-char get_knob_value(int mask, int shift, uint32_t *knob_mem_base)
+char get_knobs_value(int mask, int shift, uint32_t *knob_mem_base)
 {
    int value = *knob_mem_base;
    value = value & mask;
    return value >> shift;
 }
-
-
-
-
 // -----------
