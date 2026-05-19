@@ -9,9 +9,13 @@ LDFLAGS += -static
 LDLIBS += -lrt -lpthread
 #LDLIBS += -lm
 
-SOURCES = change_me.c mzapo_phys.c mzapo_parlcd.c serialize_lock.c
+#####################
+# aby mi fungovali fonty pridal jsem si ho tady do makefile
+# PROSTE VZDYCKY MUSIM TY NOVE SOUBORY PRIDAT DO MAKEFILE
+#####################
+SOURCES = pong_app.c mzapo_phys.c mzapo_parlcd.c serialize_lock.c font_prop14x16.c font_render.c menu.c 
 #SOURCES += font_prop14x16.c font_rom8x16.c
-TARGET_EXE = change_me
+TARGET_EXE = pong_app
 #TARGET_IP ?= 192.168.202.127
 ifeq ($(TARGET_IP),)
 ifneq ($(filter debug run,$(MAKECMDGOALS)),)
