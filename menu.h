@@ -40,16 +40,16 @@ typedef enum {
 
 void showMenu(void);
 
-char get_knob_value(int mask, int shift, uint32_t *knob_mem_base);
-
 void draw_main_menu(main_menu_cursor_t cursor);
+void draw_one_player_menu(one_player_menu_cursor_t cursor);
+void draw_two_players_menu();
+void draw_pause_menu(pause_menu_cursor_t cursor);
+void draw_end_menu(end_menu_cursor_t cursor);
+void increment_cursor();
+void decrement_cursor();
+void increment_state();
+void decrement_state();
+void change_menu();
 
-void draw_one_player_menu(void);
-
-void draw_two_players_menu(void);
-
-void draw_pause_menu(void);
-
-void draw_end_menu(void);
 
 #endif /* MENU_H */

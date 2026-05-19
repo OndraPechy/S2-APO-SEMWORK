@@ -34,9 +34,11 @@
 #define GREEN_KNOB_SHIFT 8
 #define BLUE_KNOB_MASK 0x000000FF
 #define BLUE_KNOB_SHIFT 0
+#define KNOB_MOVEMENT_DIVIDER 4
 char get_knob_value(int mask, int shift, uint32_t *knob_mem_base);
 static uint8_t green_knob_previous_position;
 static uint8_t blue_knob_previous_position;
+static uint8_t red_knob_previous_position;
 // -----------
 
 enum currentAppState
@@ -77,11 +79,11 @@ int main(int argc, char *argv[])
    // zhruba 60FPS
    loop_delay.tv_nsec = 16 * 1000 * 1000;
 
-   main_menu_cursor_t mm_cursor = ONE_PLAYER_CHOICE;
    green_knob_previous_position =
        get_knob_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
    blue_knob_previous_position =
        get_knob_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
+   red_knob_previous_position = get_knob_value(RED_KNOB_MASK, RED_KNOB_SHIFT, knob_mem);
    bool appRunning = true;
    while (appRunning) {
 
@@ -98,16 +100,38 @@ int main(int argc, char *argv[])
          // to u tady znamena ze ta 0 je unsigned
          frame_buffer[index] = 0u;
       }
-      uint8_t blue_knob_pos =
-          get_knob_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
-      if (blue_knob_pos != blue_knob_previous_position) {
-         mm_cursor = (mm_cursor + 1) % 3;
+
+      uint8_t blue_knob_pos = get_knob_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
+      // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
+      int8_t diff_blue = (int8_t)(blue_knob_pos - blue_knob_previous_position);
+      if (diff_blue <= -KNOB_MOVEMENT_DIVIDER) {
+         // otocenim doprava posunu v menu dolu
+         increment_cursor();
          blue_knob_previous_position = blue_knob_pos;
-      } else {
+      }
+      else if (diff_blue >= KNOB_MOVEMENT_DIVIDER) {
+         // otocenim doprava posunu v levo nahoru
+         // pricitam 3 aby se modulo nepocitalo se zapornym cislem
+         decrement_cursor();
          blue_knob_previous_position = blue_knob_pos;
       }
 
-      draw_main_menu(mm_cursor);
+      uint8_t red_knob_pos = get_knob_value(RED_KNOB_MASK, RED_KNOB_SHIFT, knob_mem);
+      // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
+      int8_t diff_red = (int8_t)(red_knob_pos - red_knob_previous_position);
+      if (diff_red <= -KNOB_MOVEMENT_DIVIDER) {
+         // otocenim doprava posunu v menu dolu
+         increment_state();
+         red_knob_previous_position = red_knob_pos;
+      }
+      else if (diff_red >= KNOB_MOVEMENT_DIVIDER) {
+         // otocenim doprava posunu v levo nahoru
+         // pricitam 3 aby se modulo nepocitalo se zapornym cislem
+         decrement_state();
+         red_knob_previous_position = red_knob_pos;
+      }
+
+      showMenu();
 
 
       // timto parlcd write commandem s tim 0x2c coz je konkretni cislo
