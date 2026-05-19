@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "shape_render.h"
 #include "font_render.h"
 
