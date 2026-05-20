@@ -15,12 +15,12 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "font_render.h"
 #include "font_types.h"
+#include "menu_logic.h"
 #include "mzapo_parlcd.h"
 #include "mzapo_phys.h"
 #include "mzapo_regs.h"
-#include "menu.h"
-#include "font_render.h"
 /*
 #include "ball.h"
 #include "paddle.h"
@@ -84,8 +84,11 @@ int main(int argc, char *argv[])
 
    green_knob_previous_position =
        get_knobs_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
-   green_knob_pressed_prev = get_knobs_value(GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
+   green_knob_pressed_prev = get_knobs_value(
+       GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
+
    bool appRunning = true;
+
    while (appRunning) {
       // naplnim cely ten buffer jednim cislem, aby se vykreslila jedna barva
       for (int index = 0; index < 320 * 480; index++) {
@@ -93,30 +96,31 @@ int main(int argc, char *argv[])
          frame_buffer[index] = 0u;
       }
 
-      uint8_t green_knob_pos = get_knobs_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
+      uint8_t green_knob_pos =
+          get_knobs_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
       // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
-      int8_t diff_blue = (int8_t)(green_knob_pos - green_knob_previous_position);
-      if (diff_blue <= -KNOB_MOVEMENT_DIVIDER) {
+      int8_t diff_green =
+          (int8_t)(green_knob_pos - green_knob_previous_position);
+
+      if (diff_green <= -KNOB_MOVEMENT_DIVIDER) {
          // otocenim doprava posunu v menu dolu
          green_knob_previous_position = green_knob_pos;
          increment_cursor();
-      }
-      else if (diff_blue >= KNOB_MOVEMENT_DIVIDER) {
-         // otocenim doprava posunu v levo nahoru
+      } else if (diff_blue >= KNOB_MOVEMENT_DIVIDER) {
+         // otocenim diff_green posunu v levo nahoru
          // pricitam 3 aby se modulo nepocitalo se zapornym cislem
          green_knob_previous_position = green_knob_pos;
          decrement_cursor();
       }
 
-
-      uint8_t green_knob_pressed = get_knobs_value(GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
+      uint8_t green_knob_pressed = get_knobs_value(
+          GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
       if ((green_knob_pressed != 0) && (green_knob_pressed_prev == 0)) {
-         change_menu(&appRunning);
+         make_menu_action(&appRunning);
       }
       green_knob_pressed_prev = green_knob_pressed;
 
       showMenu();
-
 
       // timto parlcd write commandem s tim 0x2c coz je konkretni cislo
       // znamenajici MemoryWrite vlastne displeji reknu, ze ted mu zacnu posilat
