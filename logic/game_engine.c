@@ -2,6 +2,7 @@
 #include "ball.h"
 #include "paddle.h"
 #include "render.h"
+#include "leds_setup.h"
 
 static ball_t ball;
 static paddle_t left_p;
@@ -39,13 +40,13 @@ static void start_game_common(int target_score) {
     reset_ball(&ball);
 
     left_p.y = 160;
-    left_p.height = 60;
-    left_p.width = 10;
+    left_p.height = 100;
+    left_p.width = 20;
     left_p.left = true;
 
     right_p.y = 160;
-    right_p.height = 60;
-    right_p.width = 10;
+    right_p.height = 100;
+    right_p.width = 20;
     right_p.left = false;
 
     state = PLAYING;
@@ -66,12 +67,16 @@ void game_tick(int left_delta, int right_delta){
     if (mode == 2){
         update_paddle(&left_p, left_delta);
     }
+
     update_paddle(&right_p, right_delta);
     state_t result = update_ball(&ball, &left_p, &right_p);
+
     if (result == SCORES_LEFT){
         score_left++;
+        lighten_rgb1(); 
     } else if(result == SCORES_RIGHT){
         score_right++;
+        lighten_rgb2();
     }
     if(score_left >= target){
         state = FINISHED;
@@ -81,6 +86,7 @@ void game_tick(int left_delta, int right_delta){
         state = FINISHED;
         winner = BLUE_PLAYER;
     }
+    lighten_led_line(score_left, score_right);
     render_game(&ball, &left_p, &right_p);
 }
 

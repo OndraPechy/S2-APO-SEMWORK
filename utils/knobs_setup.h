@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #ifndef KNOBS_SETUP_H
 #define KNOBS_SETUP_H
-#define PADDLE_KNOB_STEP 5
+#define PADDLE_KNOB_STEP 20 //change how responsive the knob move will be
 
 void setup_knobs(unsigned char *mem_base);
 void check_knobs();
