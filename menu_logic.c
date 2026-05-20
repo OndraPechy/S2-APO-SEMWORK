@@ -1,6 +1,9 @@
-#include <stdbool.h>
 #include "menu_logic.h"
+#include "config.h"
+#include "font_render.h"
 #include "menu_graphics.h"
+#include <stdbool.h>
+#include <stdio.h>
 
 static int cursor = 0;
 static int state = 0;
@@ -12,14 +15,17 @@ void showMenu()
    if (state == MAIN_MENU) {
       draw_main_menu(cursor);
    } else if (state == ONE_PLAYER_MENU) {
-      draw_one_player_menu(cursor, get_score_string(score_to_play), get_difficulty_string(difficulty));
+      draw_one_player_menu(cursor, get_score_string(score_to_play),
+                           get_difficulty_string(difficulty),
+                           get_difficulty_colour(), score_to_play);
    } else if (state == TWO_PLAYERS_MENU) {
-      draw_two_players_menu(cursor, get_score_string(score_to_play));
+      draw_two_players_menu(cursor, get_score_string(score_to_play),
+                            score_to_play);
    } else if (state == PAUSE_MENU) {
       draw_pause_menu(cursor);
    } else if (state == END_MENU) {
-      // TO BE CHANGED TO THE WINNER
-      draw_end_menu(cursor, get_score_string(score_to_play));
+      // TO BE CHANGED TO THE CORRECT WINNER
+      draw_end_menu(cursor, get_winner_string(BLUE_PLAYER), BLUE_PLAYER);
    } else {
       draw_word("ERROR OCCURED", 100, 100, 21000, 5);
    }
@@ -27,7 +33,8 @@ void showMenu()
 
 int get_menu_options_count(int current_state)
 {
-   if (current_state == PAUSE_MENU || current_state == END_MENU || current_state == TWO_PLAYERS_MENU) {
+   if (current_state == PAUSE_MENU || current_state == END_MENU ||
+       current_state == TWO_PLAYERS_MENU) {
       return 2;
    } else if (current_state == ONE_PLAYER_MENU) {
       return 5;
@@ -49,6 +56,20 @@ void decrement_cursor()
    int limit = get_menu_options_count(state);
    if (limit > 0) {
       cursor = (cursor - 1 + limit) % limit;
+   }
+}
+
+void increment_score()
+{
+   if (score_to_play < MAX_SCORE) {
+      ++score_to_play;
+   }
+}
+
+void decrement_score()
+{
+   if (score_to_play > MIN_SCORE) {
+      --score_to_play;
    }
 }
 
@@ -125,33 +146,68 @@ void reset_values()
    difficulty = NONE_DIFFICULTY_CHOSEN;
 }
 
-const char* get_difficulty_string(int difficulty)
+const char *get_difficulty_string(int difficulty)
 {
-    // Klíčové slovo 'static' zajistí, že buffer v paměti nezanikne po skončení funkce
-    static char output_buffer[50];
-    const char *diff_text;
+   // Klíčové slovo 'static' zajistí, že buffer v paměti nezanikne po skončení
+   // funkce
+   static char output_buffer[50];
+   const char *diff_text;
 
-    switch (difficulty) {
-        case 0: diff_text = "NONE"; break;
-        case 1:  diff_text = "EASY"; break;
-        case 2:  diff_text = "MEDIUM"; break;
-        case 3:  diff_text = "HARD"; break;
-        default: diff_text = "NONE"; break;
+   switch (difficulty) {
+      case 0:
+         diff_text = "NONE";
+         break;
+      case 1:
+         diff_text = "EASY";
+         break;
+      case 2:
+         diff_text = "MEDIUM";
+         break;
+      case 3:
+         diff_text = "HARD";
+         break;
+      default:
+         diff_text = "NONE";
+         break;
+   }
 
-    }
+   // Složíme string do statického bufferu
+   snprintf(output_buffer, sizeof(output_buffer), "DIFFICULTY CHOSEN: %s",
+            diff_text);
 
-    // Složíme string do statického bufferu
-    snprintf(output_buffer, sizeof(output_buffer), "DIFFICULTY CHOSEN: %s", diff_text);
-
-    // Vrátíme ukazatel na tento buffer
-    return output_buffer;
+   // Vrátíme ukazatel na tento buffer
+   return output_buffer;
 }
 
-const char* get_score_string(int score)
+const char *get_score_string(int score)
 {
-    static char score_buffer[30];
-    snprintf(score_buffer, sizeof(score_buffer), "SCORE TO PLAY: %d", score);
+   static char score_buffer[30];
+   snprintf(score_buffer, sizeof(score_buffer), "SCORE TO PLAY: %d", score);
 
-    return score_buffer;
+   return score_buffer;
 }
 
+const char *get_winner_string(int winner)
+{
+
+   if (winner == BLUE_PLAYER) {
+      return "WINNER: BLUE PLAYER";
+   } else if (winner == RED_PLAYER) {
+      return "WINNER: RED PLAYER";
+   } else {
+      return "WINNER: NONE (ERROR)";
+   }
+}
+
+int get_difficulty_colour()
+{
+   if (difficulty == EASY_DIFFICULTY_CHOSEN) {
+      return GREEN;
+   } else if (difficulty == MEDIUM_DIFFICULTY_CHOSEN) {
+      return YELLOW;
+   } else if (difficulty == HARD_DIFFICULTY_CHOSEN) {
+      return RED;
+   } else {
+      return WHITE;
+   }
+}

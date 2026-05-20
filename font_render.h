@@ -5,16 +5,20 @@
 #include "font_types.h"
 
 // EXTERN PISU DO HLAVICKOVYCH
-extern font_descriptor_t font_winFreeSystem14x16; // musi se skutecne jmenovat takhle protoze timhle
+extern font_descriptor_t
+    font_winFreeSystem14x16; // musi se skutecne jmenovat takhle protoze timhle
                              // vlastne programu rikam
 // ze budu jinde hledat promennou s timto nazvem, a takto se jmenuje v tom
 // souboru font_prop14x16.c
 
-// tim ze tomu tady dam extern, tak rikam, ze k tomu budu moct pristoupit z jinych souboru
+// tim ze tomu tady dam extern, tak rikam, ze k tomu budu moct pristoupit z
+// jinych souboru
 extern unsigned short *frame_buffer;
 
-void draw_word(char *word, int pos_x, int pos_y, unsigned short int color, int scale);
-int draw_char(char letter, int pos_x, int pos_y, unsigned short int color, int scale);
+void draw_word(const char *word, int pos_x, int pos_y, unsigned short int color,
+               int scale);
+int draw_char(char letter, int pos_x, int pos_y, unsigned short int color,
+              int scale);
 void draw_pixel(int x, int y, unsigned short int color);
 
 #endif /* FONT_DRAWER_H */

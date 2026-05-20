@@ -1,14 +1,14 @@
 // <stddef.h> obsahuje definice zakladnich typu a maker
-#include <stddef.h>
-#include "font_types.h"
 #include "font_render.h"
+#include "font_types.h"
+#include <stddef.h>
 
 // tady nepisu extern protoze to rovnou definuji
 unsigned short *frame_buffer = NULL;
 
 extern font_descriptor_t font_winFreeSystem14x16;
 
-void draw_word(char *word, int pos_x, int pos_y, unsigned short int color,
+void draw_word(const char *word, int pos_x, int pos_y, unsigned short int color,
                int scale)
 {
    size_t index = 0;
@@ -19,7 +19,8 @@ void draw_word(char *word, int pos_x, int pos_y, unsigned short int color,
    }
 }
 
-int draw_char(char letter, int pos_x, int pos_y, unsigned short int color, int scale)
+int draw_char(char letter, int pos_x, int pos_y, unsigned short int color,
+              int scale)
 {
    // ziskam index pismena v poli fontu
    int letter_index = letter - font_winFreeSystem14x16.firstchar;

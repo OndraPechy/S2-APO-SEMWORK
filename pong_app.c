@@ -42,6 +42,7 @@
 char get_knobs_value(int mask, int shift, uint32_t *knob_mem_base);
 static uint8_t green_knob_previous_position;
 static uint8_t green_knob_pressed_prev;
+static uint8_t blue_knob_previous_position;
 // -----------
 
 enum currentAppState
@@ -86,8 +87,11 @@ int main(int argc, char *argv[])
        get_knobs_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
    green_knob_pressed_prev = get_knobs_value(
        GREEN_KNOB_PRESSED_MASK, GREEN_KNOB_PRESSED_SHIFT, knob_mem);
+   blue_knob_previous_position =
+       get_knobs_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
 
    bool appRunning = true;
+   reset_values();
 
    while (appRunning) {
       // naplnim cely ten buffer jednim cislem, aby se vykreslila jedna barva
@@ -97,7 +101,7 @@ int main(int argc, char *argv[])
       }
 
       uint8_t green_knob_pos =
-          get_knobs_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
+          get_knobs_value(GREEN_KNOB_MASK, GREEN_KNOB_SHIFT, knob_mem);
       // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
       int8_t diff_green =
           (int8_t)(green_knob_pos - green_knob_previous_position);
@@ -106,11 +110,27 @@ int main(int argc, char *argv[])
          // otocenim doprava posunu v menu dolu
          green_knob_previous_position = green_knob_pos;
          increment_cursor();
-      } else if (diff_blue >= KNOB_MOVEMENT_DIVIDER) {
+      } else if (diff_green >= KNOB_MOVEMENT_DIVIDER) {
          // otocenim diff_green posunu v levo nahoru
          // pricitam 3 aby se modulo nepocitalo se zapornym cislem
          green_knob_previous_position = green_knob_pos;
          decrement_cursor();
+      }
+
+      uint8_t blue_knob_pos =
+          get_knobs_value(BLUE_KNOB_MASK, BLUE_KNOB_SHIFT, knob_mem);
+      // spoctu jaky je rozdil mezi aktualni a predeslou pozici knobu
+      int8_t diff_blue = (int8_t)(blue_knob_pos - blue_knob_previous_position);
+
+      if (diff_blue <= -KNOB_MOVEMENT_DIVIDER) {
+         // otocenim doprava posunu v menu dolu
+         blue_knob_previous_position = blue_knob_pos;
+         increment_score();
+      } else if (diff_blue >= KNOB_MOVEMENT_DIVIDER) {
+         // otocenim diff_green posunu v levo nahoru
+         // pricitam 3 aby se modulo nepocitalo se zapornym cislem
+         blue_knob_previous_position = blue_knob_pos;
+         decrement_score();
       }
 
       uint8_t green_knob_pressed = get_knobs_value(
@@ -141,7 +161,6 @@ int main(int argc, char *argv[])
    for (int index = 0; index < 320 * 480; index++) {
       parlcd_write_data(parlcd_mem_base, 65535);
    }
-
    return 0;
 }
 

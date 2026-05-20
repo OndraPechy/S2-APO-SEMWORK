@@ -38,11 +38,15 @@ typedef enum
 } end_menu_cursor_t;
 
 void draw_main_menu(main_menu_cursor_t cursor);
-void draw_one_player_menu(one_player_menu_cursor_t cursor, char *score_string,
-                          char *difficulty_string);
+void draw_one_player_menu(one_player_menu_cursor_t cursor,
+                          const char *score_string,
+                          const char *difficulty_string, int difficulty_colour,
+                          int score);
 void draw_two_players_menu(two_players_menu_cursor_t cursor,
-                           char *score_string);
+                           const char *score_string, int score);
 void draw_pause_menu(pause_menu_cursor_t cursor);
-void draw_end_menu(end_menu_cursor_t cursor, char *winner_string);
+void draw_end_menu(end_menu_cursor_t cursor, const char *winner_string,
+                   int winner);
+int get_score_color(int multiplier);
 
 #endif /* MENU_GRAPHICS_H */
