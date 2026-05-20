@@ -19,3 +19,13 @@ void update_paddle(paddle_t* paddle, int change_y){
     }
 
 }
+
+void update_bot_paddle(paddle_t* paddle, ball_t* ball, int speed){
+    int change_y = 0;
+    if (ball->y < paddle->y){
+        change_y = -speed;
+    } else if (ball->y > paddle->y){
+        change_y = speed;
+    }
+    update_paddle(paddle, change_y);
+}
