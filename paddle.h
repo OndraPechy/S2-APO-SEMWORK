@@ -1,7 +1,12 @@
 #ifndef PADDLE_H
 #define PADDLE_H
-#define WALL_OFFSET 15 //Change the distence of paddle and sides
+#define WALL_OFFSET 15 //the distence between paddles and walls
+#define EASY_BOT_SPEED 2
+#define MEDIUM_BOT_SPEED 4
+#define HARD_BOT_SPEED 6
+
 #include <stdbool.h>
+#include "ball.h"
 
 typedef struct{
     double y;  //x is done with defined offset
@@ -12,5 +17,6 @@ typedef struct{
 
 void draw_paddle(paddle_t* paddle, unsigned short int color);
 void update_paddle(paddle_t* paddle, int change_y);
+void update_bot_paddle(paddle_t* paddle, ball_t* ball, int speed);
 
 #endif

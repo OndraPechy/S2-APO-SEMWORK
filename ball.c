@@ -45,6 +45,7 @@ void bounce(ball_t* ball, paddle_t* paddle){
     if(ball->change_y <= -MAX_CHANGE_Y){
         ball->change_y = -MAX_CHANGE_Y;
     }
+    ball->change_x *= SPEED_MULT; //
 }
 
 void reset_ball(ball_t* ball){

@@ -6,6 +6,7 @@
 #define CENTER_X 240.0
 #define CENTER_Y 160.0
 #define INIT_SPEED 3.0
+#define SPEED_MULT 1.05
 
 #include <stdlib.h>
 #include "paddle.h"
