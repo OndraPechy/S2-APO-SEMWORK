@@ -4,12 +4,13 @@
 #include <stdbool.h>
 
 typedef struct{
-    double y;  //only y because x is meant to be defined
+    double y;  //x is done with defined offset
     double height;
     double width;
     bool left;
 } paddle_t;
 
 void draw_paddle(paddle_t* paddle, unsigned short int color);
+void update_paddle(paddle_t* paddle, int change_y);
 
 #endif

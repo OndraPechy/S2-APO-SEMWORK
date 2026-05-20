@@ -7,3 +7,15 @@ void draw_paddle(paddle_t* paddle, unsigned short int color){
     
     draw_rect(x, paddle->y, paddle->width, paddle->height, color);
 }
+
+void update_paddle(paddle_t* paddle, int change_y){
+    paddle->y += change_y;
+    double half = paddle->height / 2;
+    if (paddle->y - half <= 0){
+        paddle->y = half;
+    } 
+    if (paddle->y + half >= 319){
+        paddle->y = 319 - half;
+    }
+
+}
