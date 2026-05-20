@@ -23,11 +23,7 @@
 #include "mzapo_regs.h"
 #include "knobs_setup.h"
 #include "leds_setup.h"
-/*
-#include "ball.h"
-#include "paddle.h"
-#include "render.h"
-*/
+#include "game_engine.h"
 
 
 void draw_menu(bool *appRunning);
@@ -74,17 +70,53 @@ int main(int argc, char *argv[])
    setup_leds(mem_base);
    reset_values();
    game_state_t state = MENU_SCREEN;
+   bool was_playing = false;
 
    while (appRunning) {
+      if (is_game_running()) {
+         state = GAME_SCREEN;
+      }
       if (state == MENU_SCREEN) {
          draw_menu(&appRunning);
       } else {
-         // TO DO - INCLUDE GAME LOOP
-         // udelal bych to zhruba takto:
-         // 1. udelame promenou bool in game
-         // 2. do toho game loopu budeme predavat jeji adresu
-         // 3. kdyz skonci hra nebo bude hra paused, tak proste zmenis ten bool na false
-         // 4. pak tady bude nejakej if kterej osetri to co se deje tady v main
+         
+         for (int index = 0; index < 320 * 480; index++) {
+            frame_buffer[index] = 0u;
+         }
+         check_knobs();
+         check_rgb_timer();
+         check_rgb_lightening();
+
+         int left_delta = 0;   // red knob = levá pálka
+         int right_delta = 0;  // blue knob = pravá pálka
+
+         if (red_knob_moved_up()) {
+            left_delta = -PADDLE_KNOB_STEP;
+            update_red_knob();
+         } else if (red_knob_moved_down()) {
+            left_delta = PADDLE_KNOB_STEP;
+            update_red_knob();
+         }
+
+         if (blue_knob_moved_up()) {
+            right_delta = -PADDLE_KNOB_STEP;
+            update_blue_knob();
+         } else if (blue_knob_moved_down()) {
+            right_delta = PADDLE_KNOB_STEP;
+            update_blue_knob();
+         }
+
+         if (is_green_knob_clicked()) {
+            pause_game();
+            state = MENU_SCREEN;
+         }
+         update_green_knob_pressed();
+         game_tick(left_delta, right_delta);
+
+         if (!is_game_running() && was_playing) {
+            state = MENU_SCREEN;
+         }
+         was_playing = is_game_running();
       }
 
       // timto parlcd write commandem s tim 0x2c coz je konkretni cislo

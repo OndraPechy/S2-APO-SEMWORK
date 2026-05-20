@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #ifndef KNOBS_SETUP_H
 #define KNOBS_SETUP_H
+#define PADDLE_KNOB_STEP 5
 
 void setup_knobs(unsigned char *mem_base);
 void check_knobs();
