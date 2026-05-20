@@ -2,11 +2,11 @@
 #define BALL_H
 
 #define KICK_MULT 0.15
-#define MAX_CHANGE_Y 5.0
+#define MAX_CHANGE_Y 8.0 //how much y can chnge
 #define CENTER_X 240.0
 #define CENTER_Y 160.0
-#define INIT_SPEED 3.0
-#define SPEED_MULT 1.05
+#define INIT_SPEED 4.0 //how fast will the ball be at start
+#define SPEED_MULT 1.05 //multiplicate the speed
 
 #include <stdlib.h>
 #include "paddle.h"

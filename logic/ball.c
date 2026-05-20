@@ -46,11 +46,20 @@ void bounce(ball_t* ball, paddle_t* paddle){
         ball->change_y = -MAX_CHANGE_Y;
     }
     ball->change_x *= SPEED_MULT; //
+    double b_half = ball->size / 2;
+    double p_half_x = paddle->width / 2;
+    int p_x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;
+    if (paddle->left) {
+        ball->x = p_x + p_half_x + b_half + 1;
+    } else {
+        ball->x = p_x - p_half_x - b_half - 1;
+    }
 }
 
 void reset_ball(ball_t* ball){
     ball->x = CENTER_X;
     ball->y = CENTER_Y;
-    ball->change_x = (rand() % 2 == 0) ? 3.0 : -3.0;
+    ball->size = 10;
+    ball->change_x = (rand() % 2 == 0) ? INIT_SPEED : -INIT_SPEED;
     ball->change_y = ((rand() % 41) - 20) / 10.0; // -2.0 to 2.0
 }
