@@ -1,10 +1,11 @@
 #include "paddle.h"
 #include "shape_render.h"
+#include "ball.h"
 
 void draw_paddle(paddle_t* paddle, unsigned short int color){
-    
+
     int x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;  //TODO magic num
-    
+
     draw_rect(x, paddle->y, paddle->width, paddle->height, color);
 }
 
@@ -13,7 +14,7 @@ void update_paddle(paddle_t* paddle, int change_y){
     double half = paddle->height / 2;
     if (paddle->y - half <= 0){
         paddle->y = half;
-    } 
+    }
     if (paddle->y + half >= 319){
         paddle->y = 319 - half;
     }
