@@ -17,7 +17,7 @@ LDLIBS += -lrt -lpthread
 #####################
 SOURCES = pong_app.c gui/font_render.c gui/render.c gui/shape_render.c logic/ball.c gui/menu_graphics.c \
           logic/menu_logic.c logic/paddle.c mzapo/font_prop14x16.c mzapo/mzapo_parlcd.c mzapo/mzapo_phys.c \
-          mzapo/serialize_lock.c
+          mzapo/serialize_lock.c utils/knobs_setup.c utils/leds_setup.c
 #SOURCES += font_prop14x16.c font_rom8x16.c
 TARGET_EXE = pong_app
 #TARGET_IP ?= 192.168.202.127

@@ -93,18 +93,18 @@ void draw_end_menu(end_menu_cursor_t cursor, const char *winner_string,
 
 int get_score_color(int multiplier)
 {
-   int min_b = 24;
+   int min_b = 31;
    int max_b = 31;
 
-   int min_r = 0;
-   int max_r = 0;
+   int min_r = 5;
+   int max_r = 25;
 
-   int min_g = 0;
-   int max_g = 40;
+   int min_g = 20;
+   int max_g = 55;
    int divider = 9;
 
-   int r = (min_r + ((max_r - min_r) * (multiplier - 1) / divider));
-   int g = (min_g + ((max_g - min_g) * (multiplier - 1) / divider));
-   int b = (min_b + ((max_b - min_b) * (multiplier - 1) / divider));
+   int r = (max_r + ((min_r - max_r) * (multiplier - 1) / divider));
+   int g = (max_g + ((min_g - max_g) * (multiplier - 1) / divider));
+   int b = (max_b + ((min_b - max_b) * (multiplier - 1) / divider));
    return ((r << 11) | (g << 5) | b);
 }
