@@ -2,6 +2,7 @@
 #include "config.h"
 #include "font_render.h"
 #include "menu_graphics.h"
+#include "game_engine.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -24,8 +25,8 @@ void showMenu()
    } else if (state == PAUSE_MENU) {
       draw_pause_menu(cursor);
    } else if (state == END_MENU) {
-      // TO BE CHANGED TO THE CORRECT WINNER
-      draw_end_menu(cursor, get_winner_string(BLUE_PLAYER), BLUE_PLAYER);
+      int w = get_winner();
+      draw_end_menu(cursor, get_winner_string(w), w);
    } else {
       draw_word("ERROR OCCURED", 100, 100, 21000, 5);
    }
@@ -100,9 +101,7 @@ void make_menu_action(bool *appRunning)
             state = MAIN_MENU;
             reset_values();
          } else if (cursor == START_GAME_1_PLAYER_BUTTON) {
-            // TO BE CHANGED TO START THE GAME
-            state = PAUSE_MENU;
-            reset_values();
+            start_game_1p(difficulty, score_to_play);
          }
          break;
 
@@ -111,17 +110,13 @@ void make_menu_action(bool *appRunning)
             state = MAIN_MENU;
             reset_values();
          } else if (cursor == START_GAME_2_PLAYERS_BUTTON) {
-            // TO BE CHANGED TO START THE GAME
-            state = PAUSE_MENU;
-            reset_values();
+            start_game_2p(score_to_play);
          }
          break;
 
       case PAUSE_MENU:
          if (cursor == RESUME_CHOICE_BUTTON) {
-            // TO BE CHANGED TO RESUME THE GAME
-            state = END_MENU;
-            reset_values();
+            resume_game();
          } else {
             state = MAIN_MENU;
             reset_values();
