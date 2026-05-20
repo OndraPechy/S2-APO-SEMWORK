@@ -6,7 +6,9 @@
 #define HARD_BOT_SPEED 6
 
 #include <stdbool.h>
-#include "ball.h"
+
+// ZMĚNA: Přidána dopředná deklarace (říká kompilátoru, že typ ball_t existuje)
+typedef struct ball_s ball_t;
 
 typedef struct{
     double y;  //x is done with defined offset
