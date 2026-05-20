@@ -3,6 +3,7 @@
 #include "font_render.h"
 #include "game_engine.h"
 #include "menu_graphics.h"
+#include "leds_setup.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -100,8 +101,10 @@ void make_menu_action(bool *appRunning, app_state_t *state)
             *state = MAIN_MENU;
             reset_values();
          } else if (cursor == START_GAME_1_PLAYER_BUTTON) {
-            start_game_1p(difficulty, score_to_play);
-            *state = GAME_SCREEN;
+            if (difficulty != NONE_DIFFICULTY_CHOSEN) {
+               start_game_1p(difficulty, score_to_play);
+               *state = GAME_SCREEN;
+            }
          }
          break;
 
@@ -123,6 +126,7 @@ void make_menu_action(bool *appRunning, app_state_t *state)
             *state = MAIN_MENU;
             stop_game();
             reset_values();
+            reset_leds();
          }
          break;
 
@@ -130,8 +134,10 @@ void make_menu_action(bool *appRunning, app_state_t *state)
          if (cursor == RETURN_TO_MENU_CHOICE_BUTTON) {
             *state = MAIN_MENU;
             reset_values();
+            reset_leds();
          } else {
             *appRunning = false;
+            reset_leds();
          }
          break;
       case GAME_SCREEN:

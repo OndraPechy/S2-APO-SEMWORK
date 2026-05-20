@@ -69,7 +69,6 @@ void lighten_rgb2()
    rgb2_timer = 0;
 }
 
-
 void lighten_led_line(int p1_score, int p2_score)
 {
    for (int i = 0; i < p1_score; ++i) {
@@ -84,6 +83,8 @@ void lighten_led_line(int p1_score, int p2_score)
 void reset_leds()
 {
    *rgb1_mem = 0;
+   shall_lighten_rgb1 = false;
    *rgb2_mem = 0;
+   shall_lighten_rgb2 = false;
    *led_line_mem = 0;
 }

@@ -28,11 +28,6 @@ typedef enum
    BLUE_PLAYER,
 } winner_t;
 
-
-
-
-
-
 void showMenu(app_state_t state);
 int get_menu_options_count(int current_state);
 void increment_cursor(app_state_t state);

@@ -1,10 +1,16 @@
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
-#include <stdbool.h>
 #include "menu_logic.h"
+#include <stdbool.h>
 
-typedef enum{ NOT_PLAYING, PLAYING, PAUSED, FINISHED} game_state_t;
+typedef enum
+{
+   NOT_PLAYING,
+   PLAYING,
+   PAUSED,
+   FINISHED
+} game_state_t;
 
 game_state_t get_current_game_state(void);
 void start_game_1p(int difficulty, int target_score);

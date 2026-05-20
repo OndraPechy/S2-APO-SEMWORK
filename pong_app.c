@@ -25,6 +25,7 @@
 #include "mzapo_phys.h"
 #include "mzapo_regs.h"
 
+void execute_game_loop(app_state_t *state);
 void draw_menu(bool *appRunning, app_state_t *state);
 
 int main(int argc, char *argv[])
@@ -56,8 +57,7 @@ int main(int argc, char *argv[])
          case GAME_SCREEN:
             if (engine_state == PAUSED) {
                state = PAUSE_MENU;
-            }
-            else if (engine_state == FINISHED) {
+            } else if (engine_state == FINISHED) {
                state = END_MENU;
             }
             break;
@@ -72,40 +72,7 @@ int main(int argc, char *argv[])
 
       // 3. Vykreslování a logika
       if (state == GAME_SCREEN) {
-         for (int index = 0; index < 320 * 480; index++)
-            frame_buffer[index] = 0u;
-
-         check_knobs();
-         check_rgb_timer();
-         check_rgb_lightening();
-
-         int left_delta = 0;
-         int right_delta = 0;
-
-         if (red_knob_moved_up()) {
-            left_delta = -PADDLE_KNOB_STEP;
-            update_red_knob();
-         } else if (red_knob_moved_down()) {
-            left_delta = PADDLE_KNOB_STEP;
-            update_red_knob();
-         }
-
-         if (blue_knob_moved_up()) {
-            right_delta = -PADDLE_KNOB_STEP;
-            update_blue_knob();
-         } else if (blue_knob_moved_down()) {
-            right_delta = PADDLE_KNOB_STEP;
-            update_blue_knob();
-         }
-
-         if (is_green_knob_clicked()) {
-            pause_game();
-            reset_values();
-            state = PAUSE_MENU;
-         }
-
-         update_green_knob_pressed();
-         game_tick(left_delta, right_delta);
+         execute_game_loop(&state);
       } else {
          draw_menu(
              &appRunning,
@@ -125,6 +92,44 @@ int main(int argc, char *argv[])
       parlcd_write_data(parlcd_mem_base, 0xFFFF);
    }
    return 0;
+}
+
+void execute_game_loop(app_state_t *state)
+{
+   for (int index = 0; index < 320 * 480; index++)
+      frame_buffer[index] = 0u;
+
+   check_knobs();
+   check_rgb_timer();
+   check_rgb_lightening();
+
+   int left_delta = 0;
+   int right_delta = 0;
+
+   if (red_knob_moved_up()) {
+      left_delta = -PADDLE_KNOB_STEP;
+      update_red_knob();
+   } else if (red_knob_moved_down()) {
+      left_delta = PADDLE_KNOB_STEP;
+      update_red_knob();
+   }
+
+   if (blue_knob_moved_up()) {
+      right_delta = -PADDLE_KNOB_STEP;
+      update_blue_knob();
+   } else if (blue_knob_moved_down()) {
+      right_delta = PADDLE_KNOB_STEP;
+      update_blue_knob();
+   }
+
+   if (is_green_knob_clicked()) {
+      pause_game();
+      reset_values();
+      *state = PAUSE_MENU;
+   }
+
+   update_green_knob_pressed();
+   game_tick(left_delta, right_delta);
 }
 
 void draw_menu(bool *appRunning, app_state_t *state)

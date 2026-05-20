@@ -8,7 +8,6 @@
 #include "ball.h"
 #include "paddle.h"
 
-
-void render_game(ball_t* ball, paddle_t* left_p, paddle_t* right_p);
+void render_game(ball_t *ball, paddle_t *left_p, paddle_t *right_p);
 
 #endif
