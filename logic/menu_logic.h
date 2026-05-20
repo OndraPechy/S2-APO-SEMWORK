@@ -10,8 +10,9 @@ typedef enum
    ONE_PLAYER_MENU,
    TWO_PLAYERS_MENU,
    PAUSE_MENU,
-   END_MENU
-} menu_state_t;
+   END_MENU,
+   GAME_SCREEN
+} app_state_t;
 
 typedef enum
 {
@@ -27,13 +28,18 @@ typedef enum
    BLUE_PLAYER,
 } winner_t;
 
-void showMenu();
+
+
+
+
+
+void showMenu(app_state_t state);
 int get_menu_options_count(int current_state);
-void increment_cursor();
-void decrement_cursor();
+void increment_cursor(app_state_t state);
+void decrement_cursor(app_state_t state);
 void increment_score();
 void decrement_score();
-void make_menu_action(bool *appRunning);
+void make_menu_action(bool *appRunning, app_state_t *state);
 void reset_values();
 const char *get_difficulty_string(int difficulty);
 const char *get_score_string(int score);

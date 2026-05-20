@@ -14,7 +14,9 @@ static int ai_difficulty;
 static game_state_t state;
 static winner_t winner;
 
-
+game_state_t get_current_game_state(void) {
+    return state;
+}
 
 static void start_game_common(int target_score);   // pomocná
 
@@ -40,7 +42,7 @@ static void start_game_common(int target_score) {
     left_p.height = 60;
     left_p.width = 10;
     left_p.left = true;
-    
+
     right_p.y = 160;
     right_p.height = 60;
     right_p.width = 10;
@@ -54,7 +56,7 @@ void game_tick(int left_delta, int right_delta){
     if (state != PLAYING){
         return;
     }
-    
+
     if (mode == 1){
         int ai_speed = (ai_difficulty == 1) ? EASY_BOT_SPEED
                      : (ai_difficulty == 2) ? MEDIUM_BOT_SPEED
