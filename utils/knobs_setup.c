@@ -1,5 +1,5 @@
-#include "mzapo_regs.h"
 #include "knobs_setup.h"
+#include "mzapo_regs.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -79,7 +79,6 @@ void update_green_knob_pressed()
    green_knob_previous_pressed = green_knob_now_pressed;
 }
 
-
 bool green_knob_moved_up()
 {
    return ((int8_t)(green_knob_now_position - green_knob_previous_position) <=
@@ -127,5 +126,3 @@ char get_knobs_value(int mask, int shift, uint32_t *knob_mem_base)
    value = value & mask;
    return value >> shift;
 }
-
-

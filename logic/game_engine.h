@@ -6,6 +6,7 @@
 
 typedef enum{ NOT_PLAYING, PLAYING, PAUSED, FINISHED} game_state_t;
 
+game_state_t get_current_game_state(void);
 void start_game_1p(int difficulty, int target_score);
 void start_game_2p(int target_score);
 void game_tick(int left_delta, int right_delta);
