@@ -19,7 +19,7 @@ typedef struct ball_s {
     double size;
 } ball_t;
 
-typedef enum{ RALLY, SCORE_LEFT, SCORE_RIGHT } state_t;
+typedef enum{ RALLY, SCORES_LEFT, SCORES_RIGHT } state_t;
 state_t update_ball(ball_t* ball, paddle_t* left_p, paddle_t* right_p);
 bool collision_b_p(ball_t* ball, paddle_t* paddle);
 void bounce(ball_t* ball, paddle_t* paddle);

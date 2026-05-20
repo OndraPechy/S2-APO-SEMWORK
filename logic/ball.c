@@ -14,10 +14,10 @@ state_t update_ball(ball_t* ball, paddle_t* left_p, paddle_t* right_p){
     }
     if (ball->x <= 0){
         reset_ball(ball);
-        return SCORE_RIGHT;
+        return SCORES_RIGHT;
     } else if (ball->x >= 479){
         reset_ball(ball);
-        return SCORE_LEFT;
+        return SCORES_LEFT;
     } else {
         return RALLY;
     }
