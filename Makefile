@@ -1,7 +1,10 @@
 CC = arm-linux-gnueabihf-gcc
 CXX = arm-linux-gnueabihf-g++
 
-CPPFLAGS = -I .
+###################
+# Zde jsou pridane cesty do vsech podslozek, aby kompilator nasel .h soubory
+CPPFLAGS = -I . -I gui -I logic -I mzapo -I utils
+#################
 CFLAGS =-g -std=gnu99 -O1 -Wall
 CXXFLAGS = -g -std=gnu++11 -O1 -Wall
 #LDFLAGS +=
@@ -9,9 +12,14 @@ LDFLAGS += -static
 LDLIBS += -lrt -lpthread
 #LDLIBS += -lm
 
-SOURCES = change_me.c mzapo_phys.c mzapo_parlcd.c serialize_lock.c
+#####################
+# PROSTE VZDYCKY MUSIM TY NOVE SOUBORY PRIDAT DO MAKEFILE VETNE JEJICH CESTY
+#####################
+SOURCES = pong_app.c gui/font_render.c gui/render.c gui/shape_render.c logic/ball.c gui/menu_graphics.c \
+          logic/menu_logic.c logic/paddle.c logic/game_engine.c mzapo/font_prop14x16.c mzapo/mzapo_parlcd.c \
+          mzapo/mzapo_phys.c mzapo/serialize_lock.c utils/knobs_setup.c utils/leds_setup.c
 #SOURCES += font_prop14x16.c font_rom8x16.c
-TARGET_EXE = change_me
+TARGET_EXE = pong_app
 #TARGET_IP ?= 192.168.202.127
 ifeq ($(TARGET_IP),)
 ifneq ($(filter debug run,$(MAKECMDGOALS)),)
