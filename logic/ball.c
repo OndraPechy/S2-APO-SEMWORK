@@ -3,15 +3,19 @@
 state_t update_ball(ball_t* ball, paddle_t* left_p, paddle_t* right_p){
     ball->x += ball->change_x;
     ball->y += ball->change_y;
+
+    // reflect off top and bottom walls
     if (ball->y - ball->size / 2 <= 0 || ball->y + ball->size / 2 >= 319){
         ball->change_y = -ball->change_y;
     }
+
     if (collision_b_p(ball, left_p)){
-        bounce(ball, left_p);
-        
+        bounce(ball, left_p);   
     } else if(collision_b_p(ball, right_p)){
        bounce(ball, right_p);
     }
+
+    // ball passed a wall => goal for the opposite player
     if (ball->x <= 0){
         reset_ball(ball);
         return SCORES_RIGHT;
@@ -37,15 +41,21 @@ bool collision_b_p(ball_t* ball, paddle_t* paddle){
 
 void bounce(ball_t* ball, paddle_t* paddle){
     ball->change_x = -ball->change_x;
+
+    // new vertical velocity depends on where the ball hit the paddle
     double diff = ball->y - paddle->y;
     ball->change_y = diff * KICK_MULT;
+
+     // cap vertical velocity (preserve sign)
     if (ball->change_y >= MAX_CHANGE_Y){
         ball->change_y = MAX_CHANGE_Y;
     }
     if(ball->change_y <= -MAX_CHANGE_Y){
         ball->change_y = -MAX_CHANGE_Y;
     }
-    ball->change_x *= SPEED_MULT; //
+    ball->change_x *= SPEED_MULT;
+
+    // push the ball outside the paddle so it cannot get stuck
     double b_half = ball->size / 2;
     double p_half_x = paddle->width / 2;
     int p_x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;
@@ -60,6 +70,10 @@ void reset_ball(ball_t* ball){
     ball->x = CENTER_X;
     ball->y = CENTER_Y;
     ball->size = 10;
+
+     // random horizontal direction
     ball->change_x = (rand() % 2 == 0) ? INIT_SPEED : -INIT_SPEED;
-    ball->change_y = ((rand() % 41) - 20) / 10.0; // -2.0 to 2.0
+
+    // small random vertical component in range -2 to 2
+    ball->change_y = ((rand() % 41) - 20) / 10.0; 
 }

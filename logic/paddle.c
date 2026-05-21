@@ -4,13 +4,16 @@
 
 void draw_paddle(paddle_t* paddle, unsigned short int color){
 
-    int x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;  //TODO magic num
+    int x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;
 
     draw_rect(x, paddle->y, paddle->width, paddle->height, color);
 }
 
+
 void update_paddle(paddle_t* paddle, int change_y){
     paddle->y += change_y;
+
+    // clamp to the playing field
     double half = paddle->height / 2;
     if (paddle->y - half <= 0){
         paddle->y = half;
@@ -22,6 +25,7 @@ void update_paddle(paddle_t* paddle, int change_y){
 }
 
 void update_bot_paddle(paddle_t* paddle, ball_t* ball, int speed){
+    // move towards the ball, capped at 'speed' per tick
     int change_y = 0;
     if (ball->y < paddle->y){
         change_y = -speed;
