@@ -3,3 +3,5 @@ depend
 change_me
 connect.gdb
 .DS_Store
+deploy_doma.ps1
+A-INFO.txt

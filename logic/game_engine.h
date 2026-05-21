@@ -32,6 +32,11 @@ void start_game_1p(int difficulty, int target_score);
 void start_game_2p(int target_score);
 
 /**
+ * @brief Returns the game state.
+ */
+game_state_t get_current_game_state(void);
+
+/**
  * @brief Advances the game by one tick.
  *
  * Updates paddles, ball, handles goals, end-of-game detection
