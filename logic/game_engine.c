@@ -20,13 +20,13 @@ game_state_t get_current_game_state(void)
    return state;
 }
 
-static void start_game_common(int target_score); // pomocná
+/* internal helper, shared by both start_game_* variants */
+static void start_game_common(int target_score);
 
-void start_game_1p(int difficulty, int target_score)
-{
-   mode = 1;
-   ai_difficulty = difficulty;
-   start_game_common(target_score);
+void start_game_1p(int difficulty, int target_score) {
+    mode = 1;
+    ai_difficulty = difficulty;
+    start_game_common(target_score);
 }
 
 void start_game_2p(int target_score)
@@ -36,63 +36,65 @@ void start_game_2p(int target_score)
    start_game_common(target_score);
 }
 
-static void start_game_common(int target_score)
-{
-   target = target_score;
-   score_left = 0;
-   score_right = 0;
-   reset_ball(&ball);
+static void start_game_common(int target_score) {
+    target = target_score;
+    score_left = 0;
+    score_right = 0;
+    reset_ball(&ball);
 
-   left_p.y = 160;
-   left_p.height = 100;
-   left_p.width = 20;
-   left_p.left = true;
+    left_p.y = 160;
+    left_p.height = 100;
+    left_p.width = 20;
+    left_p.left = true;
+    
+    right_p.y = 160;
+    right_p.height = 100;
+    right_p.width = 20;
+    right_p.left = false;
 
-   right_p.y = 160;
-   right_p.height = 100;
-   right_p.width = 20;
-   right_p.left = false;
-
-   state = PLAYING;
-   winner = RED_PLAYER; // default
+    state = PLAYING;
+    winner = RED_PLAYER; //default, overwritten on finish
 }
 
-void game_tick(int left_delta, int right_delta)
-{
-   if (state != PLAYING) {
-      return;
-   }
-
-   if (mode == 1) {
-      int ai_speed = (ai_difficulty == 1)   ? EASY_BOT_SPEED
+void game_tick(int left_delta, int right_delta){
+    if (state != PLAYING){
+        return;
+    }
+    
+    // update left paddle: AI in 1P, player in 2P
+    if (mode == 1){
+        int ai_speed = (ai_difficulty == 1) ? EASY_BOT_SPEED
                      : (ai_difficulty == 2) ? MEDIUM_BOT_SPEED
-                                            : HARD_BOT_SPEED;
-      update_bot_paddle(&left_p, &ball, ai_speed);
-   }
-   if (mode == 2) {
-      update_paddle(&left_p, left_delta);
-   }
+                     : HARD_BOT_SPEED;
+        update_bot_paddle(&left_p, &ball, ai_speed);
+    }
+    if (mode == 2){
+        update_paddle(&left_p, left_delta);
+    }
+    // right paddle is always player
+    update_paddle(&right_p, right_delta);
+    state_t result = update_ball(&ball, &left_p, &right_p);
 
-   update_paddle(&right_p, right_delta);
-   state_t result = update_ball(&ball, &left_p, &right_p);
+    // handle goal, increment score and flash the corresponding RGB LED
+    if (result == SCORES_LEFT){
+        score_left++;
+        lighten_rgb1(); 
+    } else if(result == SCORES_RIGHT){
+        score_right++;
+        lighten_rgb2();
+    }
 
-   if (result == SCORES_LEFT) {
-      score_left++;
-      lighten_rgb1();
-   } else if (result == SCORES_RIGHT) {
-      score_right++;
-      lighten_rgb2();
-   }
-   if (score_left >= target) {
-      state = FINISHED;
-      winner = RED_PLAYER;
-   }
-   if (score_right >= target) {
-      state = FINISHED;
-      winner = BLUE_PLAYER;
-   }
-   lighten_led_line(score_left, score_right);
-   render_game(&ball, &left_p, &right_p);
+    // endgame detection
+    if(score_left >= target){
+        state = FINISHED;
+        winner = RED_PLAYER;
+    }
+    if(score_right >= target){
+        state = FINISHED;
+        winner = BLUE_PLAYER;
+    }
+    lighten_led_line(score_left, score_right);
+    render_game(&ball, &left_p, &right_p);
 }
 
 void pause_game(void)
