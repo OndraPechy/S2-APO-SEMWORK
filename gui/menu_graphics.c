@@ -2,7 +2,6 @@
 #include "config.h"
 #include "font_render.h"
 
-// budu mit staticky cursor a ten se mi vzdycky bude menit
 static int colour;
 
 void draw_main_menu(main_menu_cursor_t cursor)

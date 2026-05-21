@@ -27,16 +27,17 @@ state_t update_ball(ball_t* ball, paddle_t* left_p, paddle_t* right_p){
     }
 }
 
-bool collision_b_p(ball_t* ball, paddle_t* paddle){
-    int p_x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;
-    double b_half = ball->size / 2;
-    double p_half_x = paddle->width / 2;
-    double p_half_y = paddle->height / 2;
-    
-    return(ball->x - b_half <= p_x + p_half_x 
-        && ball->x + b_half >= p_x - p_half_x
-        && ball->y - b_half <= paddle->y + p_half_y
-        && ball->y + b_half >= paddle->y - p_half_y);
+bool collision_b_p(ball_t *ball, paddle_t *paddle)
+{
+   int p_x = paddle->left ? WALL_OFFSET : 479 - WALL_OFFSET;
+   double b_half = ball->size / 2;
+   double p_half_x = paddle->width / 2;
+   double p_half_y = paddle->height / 2;
+
+   return (ball->x - b_half <= p_x + p_half_x &&
+           ball->x + b_half >= p_x - p_half_x &&
+           ball->y - b_half <= paddle->y + p_half_y &&
+           ball->y + b_half >= paddle->y - p_half_y);
 }
 
 void bounce(ball_t* ball, paddle_t* paddle){

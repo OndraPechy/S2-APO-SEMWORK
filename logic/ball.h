@@ -1,15 +1,15 @@
 #ifndef BALL_H
 #define BALL_H
 
-#define KICK_MULT 0.15
-#define MAX_CHANGE_Y 8.0 //how much y can chnge
+#define KICK_MULT 0.20
+#define MAX_CHANGE_Y 8.0 // how much y can chnge
 #define CENTER_X 240.0
 #define CENTER_Y 160.0
-#define INIT_SPEED 4.0 //how fast will the ball be at start
-#define SPEED_MULT 1.05 //multiplicate the speed
+#define INIT_SPEED 8.0  // how fast will the ball be at start
+#define SPEED_MULT 1.05 // multiplicate the speed
 
-#include <stdlib.h>
 #include "paddle.h"
+#include <stdlib.h>
 
 /**
  * @brief Represents the ball with position, velocity and size.

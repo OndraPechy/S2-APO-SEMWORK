@@ -1,17 +1,17 @@
 #include "menu_logic.h"
 #include "config.h"
 #include "font_render.h"
-#include "menu_graphics.h"
 #include "game_engine.h"
+#include "menu_graphics.h"
+#include "leds_setup.h"
 #include <stdbool.h>
 #include <stdio.h>
 
 static int cursor = 0;
-static int state = 0;
 static int score_to_play = 1;
 static int difficulty = NONE_DIFFICULTY_CHOSEN;
 
-void showMenu()
+void showMenu(app_state_t state)
 {
    if (state == MAIN_MENU) {
       draw_main_menu(cursor);
@@ -44,7 +44,7 @@ int get_menu_options_count(int current_state)
    }
 }
 
-void increment_cursor()
+void increment_cursor(app_state_t state)
 {
    int limit = get_menu_options_count(state);
    if (limit > 0) {
@@ -52,7 +52,7 @@ void increment_cursor()
    }
 }
 
-void decrement_cursor()
+void decrement_cursor(app_state_t state)
 {
    int limit = get_menu_options_count(state);
    if (limit > 0) {
@@ -74,16 +74,16 @@ void decrement_score()
    }
 }
 
-void make_menu_action(bool *appRunning)
+void make_menu_action(bool *appRunning, app_state_t *state)
 {
-   switch (state) {
+   switch (*state) {
 
       case MAIN_MENU:
          if (cursor == ONE_PLAYER_CHOICE_BUTTON) {
-            state = ONE_PLAYER_MENU;
+            *state = ONE_PLAYER_MENU;
             reset_values();
          } else if (cursor == TWO_PLAYERS_CHOICE_BUTTON) {
-            state = TWO_PLAYERS_MENU;
+            *state = TWO_PLAYERS_MENU;
             reset_values();
          } else if (cursor == MM_EXIT_CHOICE_BUTTON) {
             *appRunning = false;
@@ -98,38 +98,49 @@ void make_menu_action(bool *appRunning)
          } else if (cursor == HARD_DIFFICULTY_BUTTON) {
             difficulty = HARD_DIFFICULTY_CHOSEN;
          } else if (cursor == GO_BACK_1_PLAYER_BUTTON) {
-            state = MAIN_MENU;
+            *state = MAIN_MENU;
             reset_values();
          } else if (cursor == START_GAME_1_PLAYER_BUTTON) {
-            start_game_1p(difficulty, score_to_play);
+            if (difficulty != NONE_DIFFICULTY_CHOSEN) {
+               start_game_1p(difficulty, score_to_play);
+               *state = GAME_SCREEN;
+            }
          }
          break;
 
       case TWO_PLAYERS_MENU:
          if (cursor == GO_BACK_2_PLAYERS_BUTTON) {
-            state = MAIN_MENU;
+            *state = MAIN_MENU;
             reset_values();
          } else if (cursor == START_GAME_2_PLAYERS_BUTTON) {
             start_game_2p(score_to_play);
+            *state = GAME_SCREEN;
          }
          break;
 
       case PAUSE_MENU:
          if (cursor == RESUME_CHOICE_BUTTON) {
             resume_game();
+            *state = GAME_SCREEN;
          } else {
-            state = MAIN_MENU;
+            *state = MAIN_MENU;
+            stop_game();
             reset_values();
+            reset_leds();
          }
          break;
 
       case END_MENU:
          if (cursor == RETURN_TO_MENU_CHOICE_BUTTON) {
-            state = MAIN_MENU;
+            *state = MAIN_MENU;
             reset_values();
+            reset_leds();
          } else {
             *appRunning = false;
+            reset_leds();
          }
+         break;
+      case GAME_SCREEN:
          break;
    }
 }

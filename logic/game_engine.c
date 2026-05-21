@@ -1,8 +1,8 @@
 #include "game_engine.h"
 #include "ball.h"
+#include "leds_setup.h"
 #include "paddle.h"
 #include "render.h"
-#include "leds_setup.h"
 
 static ball_t ball;
 static paddle_t left_p;
@@ -15,6 +15,10 @@ static int ai_difficulty;
 static game_state_t state;
 static winner_t winner;
 
+game_state_t get_current_game_state(void)
+{
+   return state;
+}
 
 /* internal helper, shared by both start_game_* variants */
 static void start_game_common(int target_score);
@@ -25,10 +29,11 @@ void start_game_1p(int difficulty, int target_score) {
     start_game_common(target_score);
 }
 
-void start_game_2p(int target_score) {
-    mode = 2;
-    ai_difficulty = 0;
-    start_game_common(target_score);
+void start_game_2p(int target_score)
+{
+   mode = 2;
+   ai_difficulty = 0;
+   start_game_common(target_score);
 }
 
 static void start_game_common(int target_score) {
@@ -92,30 +97,37 @@ void game_tick(int left_delta, int right_delta){
     render_game(&ball, &left_p, &right_p);
 }
 
-void pause_game(void){
-    state = PAUSED;
+void pause_game(void)
+{
+   state = PAUSED;
 }
 
-void resume_game(void){
-    state = PLAYING;
+void resume_game(void)
+{
+   state = PLAYING;
 }
 
-void stop_game(void){
-    state = NOT_PLAYING;
+void stop_game(void)
+{
+   state = NOT_PLAYING;
 }
 
-bool is_game_running(void){
-    return (state == PLAYING);
+bool is_game_running(void)
+{
+   return (state == PLAYING);
 }
 
-winner_t get_winner(void){
-    return winner;
+winner_t get_winner(void)
+{
+   return winner;
 }
 
-int get_score_left(void){
-    return score_left;
+int get_score_left(void)
+{
+   return score_left;
 }
 
-int get_score_right(void){
-    return score_right;
+int get_score_right(void)
+{
+   return score_right;
 }
